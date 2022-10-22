@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# const
+NAME="doprg"
+
+# flag
+nocomp=0
+
+function helpmsg() {
+	cat <<EOS
+Usage: $NAME [options] <file>
+
+Options:
+	-n		: Compiling only; do not run
+	-h		: Show this help
+
+About:
+$NAME, my-tools-sh by yuu528
+EOS
+}
+
+function compilemsg() {
+	echo "Detected language: $1"
+	echo "Compiling..."
+}
+
+while getopts "h" opt; do
+	case $opt in
+		n) nocomp=1;;
+		h) helpmsg;;
+		*) echo -e "$NAME: invalid option -- '$opt'\nTry '$NAME -h' for more information."; exit 1;;
+	esac
+done
+
+shift $(($OPTIND - 1))
+
+[ -z "$1" ] && echo "$NAME: missing file operand."; exit 1
+[ ! -f "$1" ] && echo "$NAME: cannot access '$1'; No such file."; exit 1
+
+# language detection from extention
+ext=$(echo $(basename $1) | sed 's/^.*\.\([^\.]*\)$/\1/')
+
+case $ext in
+	"java")
+		compilemsg Java;;
+esac
