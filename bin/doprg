@@ -39,14 +39,15 @@ function endscript() { # exit with cleaning up temp file, args: exit code
 }
 
 function run() { # compile and run, args: language
+	echo 'Compiling...' >&2
 	if ! eval $(echo ${CMD_COMP[$1]} | sed -e "s#%1#$output#g" -e "s#%2#$input#g"); then
-		echo 'Compiling failed.'
+		echo 'Compiling failed.' >&2
 		endscript 1
 	fi
-	echo 'Compiling completed.'
+	echo 'Compiling completed.' >&2
 
 	if [ $norun -eq 0 ]; then
-		echo 'Running...'
+		echo 'Running...' >&2
 		eval $(echo ${CMD_RUN[$1]} | sed -e "s#%1#$output#g" -e "s#%2#$input#g")
 	fi
 }
@@ -71,13 +72,13 @@ done
 
 # check input file
 if [ -z "$1" ]; then
-	echo "$NAME: missing file operand."
+	echo "$NAME: missing file operand." >&2
 	endscript 1
 elif [ "$1" = "-" ]; then
 	# read input from stdin
 	input='/dev/stdin'
 elif [ ! -f "$1" ]; then
-	echo "$NAME: cannot access '$1'; No such file."
+	echo "$NAME: cannot access '$1'; No such file." >&2
 	endscript 1
 else
 	input="$1"
