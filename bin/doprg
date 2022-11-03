@@ -15,6 +15,7 @@ declare -A CMD_RUN=(
 
 # flag, opt
 norun=0
+quiet=0
 input=''
 output=$(mktemp -d /tmp/doprg-XXXXXX)
 outtmp=1
@@ -27,6 +28,7 @@ Usage: $NAME [options] <file>
 Options:
 	-o, --output=FILE   : the compiled file will be saved to FILE
 	-n, --norun         : compiling only; the output will be saved in current directory or specified by -o
+	-q, --quiet         : quiet (no output progress messages)
 	-h, --help          : show this help
 
 About: $NAME, my-tools-sh by yuu528
@@ -39,15 +41,15 @@ function endscript() { # exit with cleaning up temp file, args: exit code
 }
 
 function run() { # compile and run, args: language
-	echo 'Compiling...' >&2
+	[ $quiet -eq 0 ] && echo 'Compiling...' >&2
 	if ! eval $(echo ${CMD_COMP[$1]} | sed -e "s#%1#$output#g" -e "s#%2#$input#g"); then
-		echo 'Compiling failed.' >&2
+		[ $quiet -eq 0 ] && echo 'Compiling failed.' >&2
 		endscript 1
 	fi
-	echo 'Compiling completed.' >&2
+	[ $quiet -eq 0 ] && echo 'Compiling completed.' >&2
 
 	if [ $norun -eq 0 ]; then
-		echo 'Running...' >&2
+		[ $quiet -eq 0 ] && echo 'Running...' >&2
 		eval $(echo ${CMD_RUN[$1]} | sed -e "s#%1#$output#g" -e "s#%2#$input#g")
 	fi
 }
@@ -58,12 +60,13 @@ function rmext() { # remove extention from filename, args: filename
 
 # main
 # parse options
-ARGS=$(getopt -o 'o:nh' -l 'output:,norun,help' -- "$@") || endscript 1
+ARGS=$(getopt -o 'o:nqh' -l 'output:,norun,quiet,help' -- "$@") || endscript 1
 eval "set -- $ARGS"
 
 while [ $# -gt 0 ]; do
 	case $1 in
 		-o | --output) rmdir $output; outtmp=0; output=$(realpath "$2"); shift 2;;
+		-q | --quiet) quiet=1; shift;;
 		-n | --norun) norun=1; shift;;
 		-h | --help) helpmsg; endscript 0;;
 		--) shift; break;;
@@ -72,13 +75,13 @@ done
 
 # check input file
 if [ -z "$1" ]; then
-	echo "$NAME: missing file operand." >&2
+	[ $quiet -eq 0 ] && echo "$NAME: missing file operand." >&2
 	endscript 1
 elif [ "$1" = "-" ]; then
 	# read input from stdin
 	input='/dev/stdin'
 elif [ ! -f "$1" ]; then
-	echo "$NAME: cannot access '$1'; No such file." >&2
+	[ $quiet -eq 0 ] && echo "$NAME: cannot access '$1'; No such file." >&2
 	endscript 1
 else
 	input="$1"
