@@ -83,7 +83,7 @@ done
 
 # check input file
 if [ -z "$1" ]; then
-	[ $quiet -eq 0 ] && echo "$NAME: missing file operand." >&2
+	[ $quiet -eq 0 ] && echo "$NAME: missing file operand. Try 'doprg -h' for more information." >&2
 	endscript 1
 elif [ "$1" = "-" ]; then
 	# read input from stdin
