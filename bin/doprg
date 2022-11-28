@@ -1,5 +1,11 @@
 #!/bin/bash
 
+########################################
+#  doprg (yuu528/my-tools-sh)          #
+# ==================================== #
+#  compile and run a program at once.  #
+########################################
+
 # const
 NAME='doprg'
 declare -A CMD_COMP=(
@@ -23,6 +29,8 @@ outtmp=1
 # func
 function helpmsg() { # echo help
 	cat <<EOS
+$NAME - compile and run a program at once.
+
 Usage: $NAME [options] <file>
 
 Options:
