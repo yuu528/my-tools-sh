@@ -19,3 +19,11 @@ Options:
  - C (.c)
  - Java (.java)
  - Python (.py)
+
+## doprg
+cd and mkdir at once.
+
+### Usage
+```
+mkcd <directory>
+```
