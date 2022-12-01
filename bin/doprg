@@ -6,6 +6,9 @@
 #  compile and run a program at once.  #
 ########################################
 
+# force using /usr/bin/javac
+PATH="/usr/bin:$PATH"
+
 # const
 NAME='doprg'
 declare -A CMD_COMP=(
