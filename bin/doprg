@@ -102,6 +102,7 @@ case $ext in
 	'java') run 'java';;
 	'c') run 'c';;
 	'py') run 'python';;
+	*) [ $quiet -eq 0 ] && echo "$NAME: could not detect a language of the input file." >&2; endscript 1;;
 esac
 
 endscript 0
